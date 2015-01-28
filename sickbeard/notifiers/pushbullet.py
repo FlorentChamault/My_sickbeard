@@ -37,6 +37,9 @@ class PushbulletNotifier:
     def get_devices(self, pushbullet_api):
         return self._sendPushbullet(pushbullet_api, method="GET", force=True)
 
+    def get_channels(self, pushbullet_api):
+        return self._sendPushbullet(pushbullet_api, method="GET", force=True)
+
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
             self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_SNATCH], event="Snatched ->"+ep_name, notificationType="note", method="POST")
