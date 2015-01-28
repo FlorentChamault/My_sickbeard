@@ -65,6 +65,8 @@ class PushbulletNotifier:
             uri = '/v2/pushes'
         else:
             uri = '/v2/devices'
+        else:
+            uri = '/v2/subscriptions'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
