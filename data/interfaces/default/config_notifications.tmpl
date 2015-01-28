@@ -981,6 +981,18 @@
                                     <span class="component-title">&nbsp;</span>
                                     <span class="component-desc">To which device you want to push to.</span>
                                 </label>
+                            </div>
+                            <div class="field-pair">
+                                <label class="nocheck clearfix">
+                                    <span class="component-title">Pushbullet channels</span>
+                                    <select name="pushbullet_channel_list" id="pushbullet_channel_list"></select>
+                                    <input type="hidden" id="pushbullet_channel" value="$sickbeard.PUSHBULLET_channel">
+                                    <input type="button" class="btn" value="Update channel list" id="getPushbulletchannels" />
+                                </label>
+                                <label class="nocheck clearfix">
+                                    <span class="component-title">&nbsp;</span>
+                                    <span class="component-desc">To which channel you want to push to.</span>
+                                </label>
                             </div> 
                             <div class="testNotification" id="testPushbullet-result">Click below to test.</div>
                             <input type="button" class="btn" value="Test Pushbullet." id="testPushbullet" />

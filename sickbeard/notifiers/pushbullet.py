@@ -16,6 +16,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+#curl -u 52T5PRi7bStmX2LbzIvDpq9xcGNQGCpk: -X POST https://api.pushbullet.com/v2/pushes?channel?tags=mysickbeard --header "Content-Type: application/json" --data-binary '{"type": "note", "channel_tag":"mysickbeard", "title": "Push to channel", "body": "push to channel »}'
+
 
 
 import socket
@@ -46,7 +50,7 @@ class PushbulletNotifier:
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang, notificationType="note", method="POST")
 
-    def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None, notificationType=None, method=None, force=False):
+    def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, pushbullet_channel=None, event=None, message=None, notificationType=None, method=None, force=False):
         
         if not sickbeard.USE_PUSHBULLET and not force:
             return False
@@ -55,6 +59,8 @@ class PushbulletNotifier:
             pushbullet_api = sickbeard.PUSHBULLET_API
         if pushbullet_device == None:
             pushbullet_device = sickbeard.PUSHBULLET_DEVICE
+        if pushbullet_channel == None:
+            pushbullet_channel = sickbeard.PUSHBULLET_CHANNEL
 
         if method == 'POST':
             uri = '/v2/pushes'
@@ -65,6 +71,7 @@ class PushbulletNotifier:
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
         logger.log(u"Pushbullet api: " + str(pushbullet_api), logger.DEBUG)
         logger.log(u"Pushbullet devices: " + str(pushbullet_device), logger.DEBUG)
+        logger.log(u"Pushbullet channel: " + str(pushbullet_channel), logger.DEBUG)
         logger.log(u"Pushbullet notification type: " + str(notificationType), logger.DEBUG)
 
         http_handler = HTTPSConnection("api.pushbullet.com")
@@ -84,6 +91,7 @@ class PushbulletNotifier:
                     'title': event.encode('utf-8'),
                     'body': message.encode('utf-8'),
                     'device_iden': pushbullet_device,
+                    'channel_tag': pushbullet_channel,
                     'type': notificationType}
                 data = json.dumps(data)
                 http_handler.request(method, uri, body=data,

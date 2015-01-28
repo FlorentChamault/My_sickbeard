@@ -257,6 +257,56 @@ $(document).ready(function () {
         });
     };
 
+    //Starting Pushbullet Channels
+
+    function get_pushbullet_channels(msg){
+
+        if(msg){
+            $('#testPushbullet-result').html(loading);
+        }
+        
+        var pushbullet_api = $("#pushbullet_api").val();
+
+        if(!pushbullet_api) {
+            $('#testPushbullet-result').html("You didn't supply a Pushbullet api key");
+            $("#pushbullet_api").focus();
+            return false;
+        }
+
+        var current_pushbullet_channel = $("#pushbullet_channel").val();
+        $.get(sbRoot + "/home/getPushbulletchannels", {'api': pushbullet_api},
+            function (data) {
+                var channels = jQuery.parseJSON(data).channels;
+                $("#pushbullet_channel_list").html('');
+                for (var i = 0; i < channels.length; i++) {
+                    if(channels[i].active == true && channels[i].pushable == true){
+                        if(current_pushbullet_channel == channels[i].iden) {
+                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].nickname + '</option>')
+                        } else {
+                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'">' + channels[i].nickname + '</option>')
+                        }
+                    }
+                }
+                if(msg) {
+                    $('#testPushbullet-result').html(msg);
+                }
+            }
+        );
+
+        $("#pushbullet_channel_list").change(function(){
+            $("#pushbullet_channel").val($("#pushbullet_channel_list").val());
+            $('#testPushbullet-result').html("Don't forget to save your new pushbullet settings.");
+        });
+    };
+
+    $('#getPushbulletchannels').click(function(){
+        get_pushbullet_channels("Channels list updated. Please choose a channels to push to.");
+    });
+
+    // we have to call this function on dom ready to create the devices select
+    get_pushbullet_channels();
+    //Stop get channels
+
     $('#getPushbulletDevices').click(function(){
         get_pushbullet_devices("Device list updated. Please choose a device to push to.");
     });

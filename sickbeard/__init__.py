@@ -1655,6 +1655,7 @@ def save_config():
     new_config['Pushbullet']['pushbullet_notify_onsubtitledownload'] = int(PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)
     new_config['Pushbullet']['pushbullet_api'] = PUSHBULLET_API
     new_config['Pushbullet']['pushbullet_device'] = PUSHBULLET_DEVICE
+    new_config['Pushbullet']['pushbullet_channel'] = PUSHBULLET_CHANNEL
 
     new_config['Libnotify'] = {}
     new_config['Libnotify']['use_libnotify'] = int(USE_LIBNOTIFY)
@@ -1717,7 +1718,7 @@ def save_config():
     new_config['Pushalot']['pushalot_notify_onsnatch'] = int(PUSHALOT_NOTIFY_ONSNATCH)
     new_config['Pushalot']['pushalot_notify_ondownload'] = int(PUSHALOT_NOTIFY_ONDOWNLOAD)
     new_config['Pushalot']['pushalot_notify_onsubtitledownload'] = int(PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)
-    new_config['Pushalot']['pushalot_authorizationtoken'] = PUSHALOT_AUTHORIZATIONTOKEN
+    new_config['Pushalot']['pushalot_authorizationtoken'] = hbulHALOT_AUTHORIZATIONTOKEN
 
     new_config['Mail'] = {}
     new_config['Mail']['use_mail'] = int(USE_MAIL)
