@@ -18,7 +18,6 @@
 # along with Sick Beard. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-#curl -u 52T5PRi7bStmX2LbzIvDpq9xcGNQGCpk: -X POST https://api.pushbullet.com/v2/pushes?channel?tags=mysickbeard --header "Content-Type: application/json" --data-binary '{"type": "note", "channel_tag":"mysickbeard", "title": "Push to channel", "body": "push to channel »}'
 
 
 
