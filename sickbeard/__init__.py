@@ -1720,7 +1720,7 @@ def save_config():
     new_config['Pushalot']['pushalot_notify_onsnatch'] = int(PUSHALOT_NOTIFY_ONSNATCH)
     new_config['Pushalot']['pushalot_notify_ondownload'] = int(PUSHALOT_NOTIFY_ONDOWNLOAD)
     new_config['Pushalot']['pushalot_notify_onsubtitledownload'] = int(PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)
-    new_config['Pushalot']['pushalot_authorizationtoken'] = hbulHALOT_AUTHORIZATIONTOKEN
+    new_config['Pushalot']['pushalot_authorizationtoken'] = HALOT_AUTHORIZATIONTOKEN
 
     new_config['Mail'] = {}
     new_config['Mail']['use_mail'] = int(USE_MAIL)
