@@ -64,17 +64,17 @@ class PushbulletNotifier:
         if pushbullet_channel == None:
             pushbullet_channel = sickbeard.PUSHBULLET_CHANNEL
 
-        if method == 'POST':
-	    uri ='/v2/pushes'
-	if method == 'GET':
-	    uri ='/v2/devices'
-	if text == 'channel':
-	    uri = '/v2/subscriptions'
+        #if method == 'POST':
+	#    uri ='/v2/pushes'
+	#if method == 'GET':
+	#    uri ='/v2/devices'
+	#if text == 'channel':
+	#    uri = '/v2/subscriptions'
 	
-	#if method == 'POST':
-        #    uri = '/v2/pushes'
-        #else:
-        #    uri = '/v2/devices'
+	if method == 'POST':
+            uri = '/v2/pushes'
+        else:
+            uri = '/v2/devices'
 
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
