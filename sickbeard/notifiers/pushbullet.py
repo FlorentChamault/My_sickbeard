@@ -69,7 +69,7 @@ class PushbulletNotifier:
         else: ## fonctionne pour subscriptions mais ne fait pas les deux
             uri = '/v2/devices'
 
-        if notificationType == 'get_channels'
+        if notificationType == 'get_channels':
             uri = '/v2/channels'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
