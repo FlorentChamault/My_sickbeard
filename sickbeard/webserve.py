@@ -2877,8 +2877,9 @@ class Home:
             return "Error sending Pushbullet notification"
 
     @cherrypy.expose
+
     #get channels
-    def getPushbulletchannels(self, api=None):
+    def getPushbulletChannels(self, api=None):
         cherrypy.response.headers['Cache-Control'] = "max-age=0,no-cache,no-store"
 
         result = notifiers.pushbullet_notifier.get_channels(api)

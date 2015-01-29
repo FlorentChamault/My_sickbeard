@@ -251,6 +251,25 @@ $(document).ready(function () {
             }
         );
 
+        $.get(sbRoot + "/home/getPushbulletChannels", {'api': pushbullet_api},
+            function (data) {
+                var channels = jQuery.parseJSON(data).channels;
+                $("#pushbullet_device_list").html('');
+                for (var i = 0; i < channels.length; i++) {
+                    if(channels[i].active == true){
+                        if(current_pushbullet_device == channels[i].iden) {
+                            $("#pushbullet_device_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].name + '</option>')
+                        } else {
+                            $("#pushbullet_device_list").append('<option value="'+channels[i].iden+'">' + channels[i].name + '</option>')
+                        }
+                    }
+                }
+                if(msg) {
+                    $('#testPushbullet-result').html(msg);
+                }
+            }
+        );
+
         $("#pushbullet_device_list").change(function(){
             $("#pushbullet_device").val($("#pushbullet_device_list").val());
             $('#testPushbullet-result').html("Don't forget to save your new pushbullet settings.");
