@@ -74,7 +74,7 @@ class PushbulletNotifier:
 	if method == 'POST':
 	    uri = '/v2/pushes'
         else:
-            uri = '/v2/devices' or '/v2/subscriptions'
+            uri = '/v2/devices' and '/v2/subscriptions'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
