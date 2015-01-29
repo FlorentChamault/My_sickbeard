@@ -281,9 +281,9 @@ $(document).ready(function () {
                 for (var i = 0; i < channels.length; i++) {
                     if(channels[i].active == true && channels[i].pushable == true){
                         if(current_pushbullet_channel == channels[i].iden) {
-                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].nickname + '</option>')
+                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].name + '</option>')
                         } else {
-                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'">' + channels[i].nickname + '</option>')
+                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'">' + channels[i].name + '</option>')
                         }
                     }
                 }
