@@ -42,15 +42,15 @@ class PushbulletNotifier:
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
-            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_SNATCH], event="Snatched ->"+ep_name, notificationType="note", method="POST")
+            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_SNATCH], event="Snatched ->"+ep_name, notificationType="note", method="pushes")
 
     def notify_download(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_DOWNLOAD], event="DL ->"+ep_name, notificationType="note", method="POST")
+            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_DOWNLOAD], event="DL ->"+ep_name, notificationType="note", method="pushes")
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang, notificationType="note", method="POST")
+            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang, notificationType="note", method="pushes")
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, pushbullet_channel=None, event=None, message=None, notificationType=None, method=None, force=False):
         
