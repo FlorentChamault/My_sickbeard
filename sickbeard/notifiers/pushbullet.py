@@ -32,25 +32,25 @@ from sickbeard import logger, common
 class PushbulletNotifier:
 
     def test_notify(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, message="Test", event="Testing Pushbullet settings from Sick Beard", method="pushes", notificationType="note", force=True)
+        return self._sendPushbullet(pushbullet_api, message="Test", event="Testing Pushbullet settings from Sick Beard", method="POST", notificationType="note", force=True)
 
     def get_devices(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, method="devices", force=True)
+        return self._sendPushbullet(pushbullet_api, method="GET", force=True)
 
     def get_channels(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, method="channels", force=True)
+        return self._sendPushbullet(pushbullet_api, method="GET", force=True)
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
-            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_SNATCH], event="Snatched ->"+ep_name, notificationType="note", method="pushes")
+            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_SNATCH], event="Snatched ->"+ep_name, notificationType="note", method="POST")
 
     def notify_download(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_DOWNLOAD], event="DL ->"+ep_name, notificationType="note", method="pushes")
+            self._sendPushbullet(pushbullet_api=None, message=common.notifyStrings[common.NOTIFY_DOWNLOAD], event="DL ->"+ep_name, notificationType="note", method="POST")
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang, notificationType="note", method="pushes")
+            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang, notificationType="note", method="POST")
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, pushbullet_channel=None, event=None, message=None, notificationType=None, method=None, force=False):
         
@@ -71,15 +71,10 @@ class PushbulletNotifier:
 	#if text == 'channel':
 	#    uri = '/v2/subscriptions'
 	
-	if method == 'pushes':
-            method == 'POST'
+	if method == 'POST':
 	    uri = '/v2/pushes'
-	elif method == 'channels':
-            method == 'POST'  
-	    uri = '/v2/channels'
         else:
-            method == 'GET'
-            uri = '/v2/devices'
+            uri = '/v2/devices' or uri = '/v2/subscriptions'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
