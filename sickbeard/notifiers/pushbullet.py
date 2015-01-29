@@ -66,7 +66,7 @@ class PushbulletNotifier:
 
         if method == 'POST':
 	    uri ='/v2/pushes'
-	if  == 'GET':
+	if method == 'GET':
 	    uri ='/v2/devices'
 	else:
 	    uri = '/v2/subscriptions'
