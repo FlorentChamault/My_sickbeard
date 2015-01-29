@@ -72,14 +72,14 @@ class PushbulletNotifier:
 	#    uri = '/v2/subscriptions'
 	
 	if method == 'pushes':
-            uri = '/v2/pushes'
             method == 'POST'
+	    uri = '/v2/pushes'
 	elif method == 'channels':
-            uri = '/v2/channels'
-            method == 'GET'
+            method == 'POST'  
+	    uri = '/v2/channels'
         else:
-            uri = '/v2/devices'
             method == 'GET'
+            uri = '/v2/devices'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
