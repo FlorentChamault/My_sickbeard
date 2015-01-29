@@ -71,6 +71,8 @@ class PushbulletNotifier:
 
         if notificationType == 'get_channels':
             uri = '/v2/channels'
+        else:
+            toto = 'rien'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
