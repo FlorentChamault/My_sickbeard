@@ -279,7 +279,7 @@ $(document).ready(function () {
                 var channels = jQuery.parseJSON(data).channels;
                 $("#pushbullet_channel_list").html('');
                 for (var i = 0; i < channels.length; i++) {
-                    if(channels[i].active == true && channels[i].pushable == true){
+                    if(channels[i].active == true){
                         if(current_pushbullet_channel == channels[i].iden) {
                             $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].name + '</option>')
                         } else {
