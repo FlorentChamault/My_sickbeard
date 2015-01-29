@@ -32,13 +32,13 @@ from sickbeard import logger, common
 class PushbulletNotifier:
 
     def test_notify(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, message="Test", event="Testing Pushbullet settings from Sick Beard", method="POST", notificationType="note", force=True)
+        return self._sendPushbullet(pushbullet_api, message="Test", event="Testing Pushbullet settings from Sick Beard", method="pushes", notificationType="note", force=True)
 
     def get_devices(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, method="GET", force=True)
+        return self._sendPushbullet(pushbullet_api, method="devices", force=True)
 
     def get_channels(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, method="GET", force=True)
+        return self._sendPushbullet(pushbullet_api, method="channels", force=True)
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
@@ -71,11 +71,15 @@ class PushbulletNotifier:
 	#if text == 'channel':
 	#    uri = '/v2/subscriptions'
 	
-	if method == 'POST':
+	if method == 'pushes':
             uri = '/v2/pushes'
+            method == 'POST'
+	elif method == 'channels':
+            uri = '/v2/channels'
+            method == 'GET'
         else:
             uri = '/v2/devices'
-
+            method == 'GET'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
