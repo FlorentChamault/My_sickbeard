@@ -230,12 +230,12 @@ $(document).ready(function () {
             $("#pushbullet_api").focus();
             return false;
         }
-
+        $("#pushbullet_device_list").html('');
         var current_pushbullet_device = $("#pushbullet_device").val();
         $.get(sbRoot + "/home/getPushbulletDevices", {'api': pushbullet_api},
             function (data) {
                 var devices = jQuery.parseJSON(data).devices;
-                $("#pushbullet_device_list").html('');
+                
                 for (var i = 0; i < devices.length; i++) {
                     if(devices[i].active == true && devices[i].pushable == true){
                         if(current_pushbullet_device == devices[i].iden) {
@@ -254,7 +254,7 @@ $(document).ready(function () {
         $.get(sbRoot + "/home/getPushbulletChannels", {'api': pushbullet_api},
             function (data) {
                 var channels = jQuery.parseJSON(data).channels;
-                //$("#pushbullet_device_list").html('');
+                
                 for (var i = 0; i < channels.length; i++) {
                     if(channels[i].active == true){
                         if(current_pushbullet_device == channels[i].iden) {
