@@ -254,7 +254,7 @@ $(document).ready(function () {
         $.get(sbRoot + "/home/getPushbulletChannels", {'api': pushbullet_api},
             function (data) {
                 var channels = jQuery.parseJSON(data).channels;
-                $("#pushbullet_device_list").html('');
+                //$("#pushbullet_device_list").html('');
                 for (var i = 0; i < channels.length; i++) {
                     if(channels[i].active == true){
                         if(current_pushbullet_device == channels[i].iden) {
@@ -293,7 +293,7 @@ $(document).ready(function () {
         }
 
         var current_pushbullet_channel = $("#pushbullet_channel").val();
-        $.get(sbRoot + "/home/getPushbulletchannels", {'api': pushbullet_api},
+        $.get(sbRoot + "/home/getPushbulletChannels", {'api': pushbullet_api},
             function (data) {
                 var channels = jQuery.parseJSON(data).channels;
                 $("#pushbullet_channel_list").html('');
