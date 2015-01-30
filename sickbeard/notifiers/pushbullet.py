@@ -38,7 +38,7 @@ class PushbulletNotifier:
         return self._sendPushbullet(pushbullet_api, method="GET", force=True)
 
     def get_channels(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, method="GET", force=True, notificationType='get_channels')
+        return self._sendPushbullet(pushbullet_api, method="GET", force=True, notificationType='get_channels', event="getChannels")
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
