@@ -913,6 +913,7 @@ def initialize(consoleLogging=True):
         PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(CFG, 'Pushbullet', 'pushbullet_notify_onsubtitledownload', 0))
         PUSHBULLET_API = check_setting_str(CFG, 'Pushbullet', 'pushbullet_api', '')
         PUSHBULLET_DEVICE = check_setting_str(CFG, 'Pushbullet', 'pushbullet_device', '')
+        PUSHBULLET_CHANNEL = check_setting_str(CFG, 'Pushbullet', 'pushbullet_channel', '')
 
         CheckSection(CFG, 'Libnotify')
         USE_LIBNOTIFY = bool(check_setting_int(CFG, 'Libnotify', 'use_libnotify', 0))
@@ -1655,6 +1656,7 @@ def save_config():
     new_config['Pushbullet']['pushbullet_notify_onsubtitledownload'] = int(PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)
     new_config['Pushbullet']['pushbullet_api'] = PUSHBULLET_API
     new_config['Pushbullet']['pushbullet_device'] = PUSHBULLET_DEVICE
+    new_config['Pushbullet']['pushbullet_channel'] = PUSHBULLET_CHANNEL
 
     new_config['Libnotify'] = {}
     new_config['Libnotify']['use_libnotify'] = int(USE_LIBNOTIFY)
