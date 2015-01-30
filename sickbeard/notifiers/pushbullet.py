@@ -38,7 +38,7 @@ class PushbulletNotifier:
         return self._sendPushbullet(pushbullet_api, method="GET", force=True)
 
     def get_channels(self, pushbullet_api):
-        return self._sendPushbullet(pushbullet_api, method="GET", force=True, notificationType='get_channels', event="getChannels")
+        return self._sendPushbullet(pushbullet_api, method="GET", force=True, event="getChannels")
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
@@ -69,10 +69,8 @@ class PushbulletNotifier:
         else: ## fonctionne pour subscriptions mais ne fait pas les deux
             uri = '/v2/devices'
 
-        if notificationType == 'get_channels':
+        if event == 'getChannels':
             uri = '/v2/channels'
-        else:
-            toto = 'rien'
 
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
