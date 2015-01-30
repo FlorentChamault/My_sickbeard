@@ -238,10 +238,10 @@ $(document).ready(function () {
                 
                 for (var i = 0; i < devices.length; i++) {
                     if(devices[i].active == true && devices[i].pushable == true){
-                        if(current_pushbullet_device == devices[i].iden) {
-                            $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'" selected>' + devices[i].nickname + '</option>')
+                        if(current_pushbullet_device ==  'device:'+devices[i].iden) {
+                            $("#pushbullet_device_list").append('<option value="device:'+devices[i].iden+'" selected>' + devices[i].nickname + '</option>')
                         } else {
-                            $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'">' + devices[i].nickname + '</option>')
+                            $("#pushbullet_device_list").append('<option value="device:'+devices[i].iden+'">' + devices[i].nickname + '</option>')
                         }
                     }
                 }
@@ -254,13 +254,13 @@ $(document).ready(function () {
         $.get(sbRoot + "/home/getPushbulletChannels", {'api': pushbullet_api},
             function (data) {
                 var channels = jQuery.parseJSON(data).channels;
-                
+
                 for (var i = 0; i < channels.length; i++) {
                     if(channels[i].active == true){
-                        if(current_pushbullet_device == channels[i].iden) {
-                            $("#pushbullet_device_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].name + '</option>')
+                        if(current_pushbullet_device == 'channel:'+channels[i].tag) {
+                            $("#pushbullet_device_list").append('<option value="channel:'+channels[i].tag+'" selected>' + channels[i].name + '</option>')
                         } else {
-                            $("#pushbullet_device_list").append('<option value="'+channels[i].iden+'">' + channels[i].name + '</option>')
+                            $("#pushbullet_device_list").append('<option value="channel:'+channels[i].tag+'">' + channels[i].name + '</option>')
                         }
                     }
                 }

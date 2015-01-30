@@ -92,12 +92,20 @@ class PushbulletNotifier:
         else:
             testMessage = False
             try:
-                data = {
-                    'title': event.encode('utf-8'),
-                    'body': message.encode('utf-8'),
-                    'device_iden': pushbullet_device,
-                    'channel_tag': pushbullet_channel,
-                    'type': notificationType}
+                device = pushbullet_device.split(':');
+                if device[0] == 'device':
+                    data = {
+                        'title': event.encode('utf-8'),
+                        'body': message.encode('utf-8'),
+                        'device_iden': device[1],
+                        'type': notificationType}
+                else:
+                    data = {
+                        'title': event.encode('utf-8'),
+                        'body': message.encode('utf-8'),
+                        'channel_tag': device[1],
+                        'type': notificationType}
+
                 data = json.dumps(data)
                 http_handler.request(method, uri, body=data,
                                      headers={'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % pushbullet_api})
