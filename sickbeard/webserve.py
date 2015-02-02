@@ -1544,7 +1544,7 @@ class ConfigNotifications:
                           pytivo_host=None, pytivo_share_name=None, pytivo_tivo_name=None,
                           use_nma=None, nma_notify_onsnatch=None, nma_notify_ondownload=None, nma_notify_onsubtitledownload=None, nma_api=None, nma_priority=0,
                           use_pushalot=None, pushalot_notify_onsnatch=None, pushalot_notify_ondownload=None, pushalot_notify_onsubtitledownload=None, pushalot_authorizationtoken=None,
-                          use_pushbullet=None, pushbullet_notify_onsnatch=None, pushbullet_notify_ondownload=None, pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device=None, pushbullet_device_list=None, pushbullet_channel=None, pushbullet_channel_list=None,      
+                          use_pushbullet=None, pushbullet_notify_onsnatch=None, pushbullet_notify_ondownload=None, pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device=None, pushbullet_device_list=None, pushbullet_channel_list=None,      
                           use_mail=None, mail_username=None, mail_password=None, mail_server=None, mail_ssl=None, mail_from=None, mail_to=None, mail_notify_onsnatch=None ):
 
 
