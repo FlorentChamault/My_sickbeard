@@ -3979,10 +3979,10 @@ class WebInterface:
         logger.log(u"Receiving iCal request from " + str(cherrypy.request.remote.ip))
         
         try:
-            from PIL import Image
-            pil_import = True
+                from PIL import Image
+                pil_import = True
         except ImportError:
-            pil_import = False
+                pil_import = False
 
             # Get the current instance URL to set up banner image links later on
             poster_url = cherrypy.url().replace('ical', '')
@@ -4039,35 +4039,35 @@ class WebInterface:
                     # at http://code.google.com/p/sickbeard/issues/detail?id=1573 to get more info on why runtime is never set
                     # even though it's available from TVRage/TVDB
                     if(int(show["runtime"]) > 0):
-                # Create a new datetime object to represent the end time which is just the air time plus
-                # a timedelta of the runtime
-                et = at + datetime.timedelta(minutes = int(show["runtime"]))
+                        # Create a new datetime object to represent the end time which is just the air time plus
+                        # a timedelta of the runtime
+                        et = at + datetime.timedelta(minutes = int(show["runtime"]))
                         event.add('dtend', et.astimezone(UTC))
-            else:
-                # No runtime info available, just set the end time to the start time
-                event.add('dtend', at.astimezone(UTC))
+                    else:
+                        # No runtime info available, just set the end time to the start time
+                        event.add('dtend', at.astimezone(UTC))
                     
                     # Add Google Calendar stuff, I'm not sure if this works yet because Google Calendar only updates every 24 hours.
                     # This should add a Sick-Beard icon and show poster.
-            event.add('X-GOOGLE-CALENDAR-CONTENT-TITLE', show["show_name"] + ": " + episode["name"])
+                    event.add('X-GOOGLE-CALENDAR-CONTENT-TITLE', show["show_name"] + ": " + episode["name"])
                     event.add('X-GOOGLE-CALENDAR-CONTENT-TYPE', 'image/*')
                     event.add('X-GOOGLE-CALENDAR-CONTENT-URL', poster_url + "showPoster/?show=" + str(show["tvdb_id"]) + "&which=banner")
-            if(pil_import):
-                # We can get an accurate height/width
-                try:
-                    image_path = ek.ek(os.path.join, sickbeard.PROG_DIR, 'cache', 'images', str(show["tvdb_id"]) + ".banner.jpg")
-                    b = Image.open(image_path)
-                except IOError:
-                    logger.log(u"Couldn't get image info for " + str(show["show_name"]) + " / " + str(image_path))
-                else:
-                    w,h = b.size
-                    event.add('X-GOOGLE-CALENDAR-CONTENT-WIDTH', str(w))
-                    event.add('X-GOOGLE-CALENDAR-CONTENT-HEIGHT', str(h))           
-            else:
-                # Just guessing height, it seems to be what all the banners are.
-                event.add('X-GOOGLE-CALENDAR-CONTENT-WIDTH', '758')
-                event.add('X-GOOGLE-CALENDAR-CONTENT-HEIGHT', '140')
-                    event.add('X-GOOGLE-CALENDAR-CONTENT-ICON', poster_url + "images/favicon.ico")
+                    if(pil_import):
+                            # We can get an accurate height/width
+                            try:
+                                    image_path = ek.ek(os.path.join, sickbeard.PROG_DIR, 'cache', 'images', str(show["tvdb_id"]) + ".banner.jpg")
+                                    b = Image.open(image_path)
+                            except IOError:
+                                    logger.log(u"Couldn't get image info for " + str(show["show_name"]) + " / " + str(image_path))
+                            else:
+                                    w,h = b.size
+                                    event.add('X-GOOGLE-CALENDAR-CONTENT-WIDTH', str(w))
+                                    event.add('X-GOOGLE-CALENDAR-CONTENT-HEIGHT', str(h))           
+                    else:
+                            # Just guessing height, it seems to be what all the banners are.
+                            event.add('X-GOOGLE-CALENDAR-CONTENT-WIDTH', '758')
+                            event.add('X-GOOGLE-CALENDAR-CONTENT-HEIGHT', '140')
+                            event.add('X-GOOGLE-CALENDAR-CONTENT-ICON', poster_url + "images/favicon.ico")
                     
                     # Generate a random UID to refer to this date
                     event['uid'] = datetime.date.today().isoformat() + "-" + str(random.randint(10000,99999)) + "@Sick-Beard"
