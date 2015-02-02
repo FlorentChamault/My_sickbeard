@@ -3890,86 +3890,196 @@ class WebInterface:
 
         return _munge(t)
         
-    # Raw iCalendar implementation by Pedro Jose Pereira Vieito (@pvieito).
-    #
-    # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546> 
-    # Works with iCloud, Google Calendar and Outlook.
+    # # Raw iCalendar implementation by Pedro Jose Pereira Vieito (@pvieito).
+    # #
+    # # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546> 
+    # # Works with iCloud, Google Calendar and Outlook.
+    # @cherrypy.expose
+    # def calendar(self):
+    #     """ Provides a subscribeable URL for iCal subscriptions
+    #     """
+
+    #     logger.log(u"Receiving iCal request from %s" % cherrypy.request.remote.ip)
+
+    #     poster_url = cherrypy.url().replace('ical', '')
+
+    #     time_re = re.compile('([0-9]{1,2})\:([0-9]{2})(\ |)([AM|am|PM|pm]{2})')
+
+    #     # Create a iCal string        
+    #     ical = 'BEGIN:VCALENDAR\n' 
+    #     ical += 'VERSION:2.0\n'
+    #     ical += 'PRODID://Sick-Beard Upcoming Episodes//\n'
+
+    #     # Get shows info
+    #     myDB = db.DBConnection()
+        
+    #     # Limit dates
+    #     past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
+    #     future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
+        
+    #     # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
+    #     calendar_shows = myDB.select("SELECT show_name, tvdb_id, network, airs, runtime FROM tv_shows WHERE status = 'Continuing' AND paused != '1'")
+    #     for show in calendar_shows:
+    #         # Get all episodes of this show airing between today and next month
+    #         episode_list = myDB.select("SELECT tvdbid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?", (past_date, future_date, int(show["tvdb_id"])))
+
+    #         for episode in episode_list:
+                
+    #             # Get local timezone and load network timezones
+    #             local_zone = tz.tzlocal() 
+    #             try:
+    #                 network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
+    #             except:
+    #                 # Dummy network_zone for exceptions
+    #                 network_zone = None
+                
+    #             # Get the air date and time
+    #             air_date = datetime.datetime.fromordinal(int(episode['airdate']))
+    #             air_time = re.compile('([0-9]{1,2})\:([0-9]{2})(\ |)([AM|am|PM|pm]{2})').search(show["airs"])
+                
+    #             # Parse out the air time
+    #             try:
+    #                 if (air_time.group(4).lower() == 'pm' and int(air_time.group(1)) == 12):
+    #                     t = datetime.time(12, int(air_time.group(2)), 0, tzinfo=network_zone)
+    #                 elif (air_time.group(4).lower() == 'pm'):
+    #                     t = datetime.time((int(air_time.group(1)) + 12), int(air_time.group(2)), 0, tzinfo=network_zone)
+    #                 elif (air_time.group(4).lower() == 'am' and int(air_time.group(1)) == 12):
+    #                     t = datetime.time(0, int(air_time.group(2)), 0, tzinfo=network_zone)
+    #                 else:
+    #                     t = datetime.time(int(air_time.group(1)), int(air_time.group(2)), 0, tzinfo=network_zone)
+    #             except:
+    #                 # Dummy time for exceptions
+    #                 t = datetime.time(22, 0, 0, tzinfo=network_zone)
+                
+    #             # Combine air time and air date into one datetime object
+    #             air_date_time = datetime.datetime.combine(air_date, t).astimezone(local_zone)
+                
+    #             # Create event for episode
+    #             ical = ical + 'BEGIN:VEVENT\n'
+    #             ical = ical + 'DTSTART:' + str(air_date_time.date()).replace("-", "") + '\n'
+    #             ical = ical + 'SUMMARY:' + show['show_name'] + ': ' + episode['name'] + '\n'
+    #             ical = ical + 'UID:' + str(datetime.date.today().isoformat()) + '-' + str(random.randint(10000,99999)) + '@Sick-Beard\n'
+    #             if (episode['description'] != ''):
+    #                 ical = ical + 'DESCRIPTION:' + show['airs'] + ' on ' + show['network'] + '\\n\\n' + episode['description'] + '\n'
+    #             else:
+    #                 ical = ical + 'DESCRIPTION:' + show['airs'] + ' on ' + show['network'] + '\n'
+    #             ical = ical + 'LOCATION:' + 'Episode ' + str(episode['episode']) + ' - Season ' + str(episode['season']) + '\n'
+    #             ical = ical + 'END:VEVENT\n'
+
+    #     # Ending the iCal
+    #     ical += 'END:VCALENDAR\n' 
+        
+    #     return ical
+        # Provides a URL to generate an .ics/iCalendar subscribable URL to have an upcoming episode schedule
     @cherrypy.expose
     def calendar(self):
-        """ Provides a subscribeable URL for iCal subscriptions
-        """
+    from icalendar import Calendar, Event
+    import random
 
-        logger.log(u"Receiving iCal request from %s" % cherrypy.request.remote.ip)
+    logger.log(u"Receiving iCal request from " + str(cherrypy.request.remote.ip))
+    
+    try:
+        from PIL import Image
+        pil_import = True
+    except ImportError:
+        pil_import = False
 
+        # Get the current instance URL to set up banner image links later on
         poster_url = cherrypy.url().replace('ical', '')
-
+        
+        # Separate out the hours/minutes/AMPM
         time_re = re.compile('([0-9]{1,2})\:([0-9]{2})(\ |)([AM|am|PM|pm]{2})')
-
-        # Create a iCal string        
-        ical = 'BEGIN:VCALENDAR\n' 
-        ical += 'VERSION:2.0\n'
-        ical += 'PRODID://Sick-Beard Upcoming Episodes//\n'
-
-        # Get shows info
+        
+        # Create an iCalendar object with FixedOffset as air times are in EST
+        cal = Calendar()
+        from icalendar import FixedOffset, UTC
+    # Create the EST tzinfo object
+        EST = FixedOffset(-240, "EST")
+        cal.add('version', '2.0')
+        cal.add('prodid', '//Sick-Beard Upcoming Episodes//')
+        
         myDB = db.DBConnection()
         
-        # Limit dates
-        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
-        future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
+        today = datetime.date.today().toordinal()
+        next_month = (datetime.date.today() + datetime.timedelta(days=30)).toordinal()
         
-        # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        calendar_shows = myDB.select("SELECT show_name, tvdb_id, network, airs, runtime FROM tv_shows WHERE status = 'Continuing' AND paused != '1'")
+        # Get all the shows that are not paused and are currently on air
+        calendar_shows = myDB.select("SELECT show_name, tvdb_id, network, airs, runtime FROM tv_shows WHERE status = 'Continuing' AND paused != '1'");
+        
+        # Loop through the shows, get all episodes airing today or after and earlier than next_month
         for show in calendar_shows:
-            # Get all episodes of this show airing between today and next month
-            episode_list = myDB.select("SELECT tvdbid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?", (past_date, future_date, int(show["tvdb_id"])))
-
+            episode_list = myDB.select("SELECT tvdbid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?", (today, next_month, int(show["tvdb_id"])))
+            
+            # Loop through the found episodes
             for episode in episode_list:
-                
-                # Get local timezone and load network timezones
-                local_zone = tz.tzlocal() 
-                try:
-                    network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
-                except:
-                    # Dummy network_zone for exceptions
-                    network_zone = None
-                
-                # Get the air date and time
-                air_date = datetime.datetime.fromordinal(int(episode['airdate']))
-                air_time = re.compile('([0-9]{1,2})\:([0-9]{2})(\ |)([AM|am|PM|pm]{2})').search(show["airs"])
+                # Create an iCalendar event
+                event = Event()
+                # Add the show summary (usually just title)
+                event.add('summary', show["show_name"] + ": " + episode["name"])
+                # Get the air date
+                air_date = datetime.datetime.fromordinal(int(episode["airdate"]))
+                # Get the air time
+                air_time = time_re.search(show["airs"])
                 
                 # Parse out the air time
-                try:
-                    if (air_time.group(4).lower() == 'pm' and int(air_time.group(1)) == 12):
-                        t = datetime.time(12, int(air_time.group(2)), 0, tzinfo=network_zone)
-                    elif (air_time.group(4).lower() == 'pm'):
-                        t = datetime.time((int(air_time.group(1)) + 12), int(air_time.group(2)), 0, tzinfo=network_zone)
-                    elif (air_time.group(4).lower() == 'am' and int(air_time.group(1)) == 12):
-                        t = datetime.time(0, int(air_time.group(2)), 0, tzinfo=network_zone)
-                    else:
-                        t = datetime.time(int(air_time.group(1)), int(air_time.group(2)), 0, tzinfo=network_zone)
-                except:
-                    # Dummy time for exceptions
-                    t = datetime.time(22, 0, 0, tzinfo=network_zone)
+                if(air_time.group(4).lower() == 'pm'):
+                    t = datetime.time((int(air_time.group(1)) + 12), int(air_time.group(2)), 0, tzinfo=EST)
+                else:
+                    t = datetime.time(int(air_time.group(1)), int(air_time.group(2)), 0, tzinfo=EST)
                 
                 # Combine air time and air date into one datetime object
-                air_date_time = datetime.datetime.combine(air_date, t).astimezone(local_zone)
-                
-                # Create event for episode
-                ical = ical + 'BEGIN:VEVENT\n'
-                ical = ical + 'DTSTART:' + str(air_date_time.date()).replace("-", "") + '\n'
-                ical = ical + 'SUMMARY:' + show['show_name'] + ': ' + episode['name'] + '\n'
-                ical = ical + 'UID:' + str(datetime.date.today().isoformat()) + '-' + str(random.randint(10000,99999)) + '@Sick-Beard\n'
-                if (episode['description'] != ''):
-                    ical = ical + 'DESCRIPTION:' + show['airs'] + ' on ' + show['network'] + '\\n\\n' + episode['description'] + '\n'
-                else:
-                    ical = ical + 'DESCRIPTION:' + show['airs'] + ' on ' + show['network'] + '\n'
-                ical = ical + 'LOCATION:' + 'Episode ' + str(episode['episode']) + ' - Season ' + str(episode['season']) + '\n'
-                ical = ical + 'END:VEVENT\n'
+                at = datetime.datetime.combine(air_date, t)
 
-        # Ending the iCal
-        ical += 'END:VCALENDAR\n' 
+                # Add start time
+                event.add('dtstart', at.astimezone(UTC))
+                
+                # If the runtime is defined, we can set an end time.  Otherwise it'll just show up as the start time.
+                # Sick-Beard in its current incarnation doesn't populate this value for some reason, so for now this doesn't work.
+                # I'm also assuming if/when it does start getting set it will be getting set in minutes.  I've opened an issue
+                # at http://code.google.com/p/sickbeard/issues/detail?id=1573 to get more info on why runtime is never set
+                # even though it's available from TVRage/TVDB
+                if(int(show["runtime"]) > 0):
+            # Create a new datetime object to represent the end time which is just the air time plus
+            # a timedelta of the runtime
+            et = at + datetime.timedelta(minutes = int(show["runtime"]))
+                    event.add('dtend', et.astimezone(UTC))
+        else:
+            # No runtime info available, just set the end time to the start time
+            event.add('dtend', at.astimezone(UTC))
+                
+                # Add Google Calendar stuff, I'm not sure if this works yet because Google Calendar only updates every 24 hours.
+                # This should add a Sick-Beard icon and show poster.
+        event.add('X-GOOGLE-CALENDAR-CONTENT-TITLE', show["show_name"] + ": " + episode["name"])
+                event.add('X-GOOGLE-CALENDAR-CONTENT-TYPE', 'image/*')
+                event.add('X-GOOGLE-CALENDAR-CONTENT-URL', poster_url + "showPoster/?show=" + str(show["tvdb_id"]) + "&which=banner")
+        if(pil_import):
+            # We can get an accurate height/width
+            try:
+                image_path = ek.ek(os.path.join, sickbeard.PROG_DIR, 'cache', 'images', str(show["tvdb_id"]) + ".banner.jpg")
+                b = Image.open(image_path)
+            except IOError:
+                logger.log(u"Couldn't get image info for " + str(show["show_name"]) + " / " + str(image_path))
+            else:
+                w,h = b.size
+                event.add('X-GOOGLE-CALENDAR-CONTENT-WIDTH', str(w))
+                event.add('X-GOOGLE-CALENDAR-CONTENT-HEIGHT', str(h))           
+        else:
+            # Just guessing height, it seems to be what all the banners are.
+            event.add('X-GOOGLE-CALENDAR-CONTENT-WIDTH', '758')
+            event.add('X-GOOGLE-CALENDAR-CONTENT-HEIGHT', '140')
+                event.add('X-GOOGLE-CALENDAR-CONTENT-ICON', poster_url + "images/favicon.ico")
+                
+                # Generate a random UID to refer to this date
+                event['uid'] = datetime.date.today().isoformat() + "-" + str(random.randint(10000,99999)) + "@Sick-Beard"
+                
+                # Add the event to the Calendar object
+                cal.add_component(event)
         
-        return ical
+        # Pass the calendar string to the tmpl file
+        t = PageTemplate(file="ical.tmpl")
+        t.calendarString = cal.as_string()
+        
+        return _munge(t)
 
     manage = Manage()
 
