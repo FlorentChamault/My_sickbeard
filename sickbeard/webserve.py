@@ -3984,13 +3984,13 @@ class WebInterface:
         except ImportError:
                 pil_import = False
 
-            # Get the current instance URL to set up banner image links later on
-            poster_url = cherrypy.url().replace('ical', '')
+        # Get the current instance URL to set up banner image links later on
+        poster_url = cherrypy.url().replace('ical', '')
             
-            # Separate out the hours/minutes/AMPM
-            time_re = re.compile('([0-9]{1,2})\:([0-9]{2})(\ |)([AM|am|PM|pm]{2})')
+        # Separate out the hours/minutes/AMPM
+        time_re = re.compile('([0-9]{1,2})\:([0-9]{2})(\ |)([AM|am|PM|pm]{2})')
             
-            # Create an iCalendar object with FixedOffset as air times are in EST
+        # Create an iCalendar object with FixedOffset as air times are in EST
             cal = Calendar()
             from icalendar import FixedOffset, UTC
         # Create the EST tzinfo object
