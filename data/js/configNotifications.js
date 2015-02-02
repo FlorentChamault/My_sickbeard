@@ -230,18 +230,37 @@ $(document).ready(function () {
             $("#pushbullet_api").focus();
             return false;
         }
-
+        $("#pushbullet_device_list").html('');
         var current_pushbullet_device = $("#pushbullet_device").val();
         $.get(sbRoot + "/home/getPushbulletDevices", {'api': pushbullet_api},
             function (data) {
                 var devices = jQuery.parseJSON(data).devices;
-                $("#pushbullet_device_list").html('');
+                
                 for (var i = 0; i < devices.length; i++) {
                     if(devices[i].active == true && devices[i].pushable == true){
-                        if(current_pushbullet_device == devices[i].iden) {
-                            $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'" selected>' + devices[i].nickname + '</option>')
+                        if(current_pushbullet_device ==  'device:'+devices[i].iden) {
+                            $("#pushbullet_device_list").append('<option value="device:'+devices[i].iden+'" selected>' + devices[i].nickname + '</option>')
                         } else {
-                            $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'">' + devices[i].nickname + '</option>')
+                            $("#pushbullet_device_list").append('<option value="device:'+devices[i].iden+'">' + devices[i].nickname + '</option>')
+                        }
+                    }
+                }
+                if(msg) {
+                    $('#testPushbullet-result').html(msg);
+                }
+            }
+        );
+
+        $.get(sbRoot + "/home/getPushbulletChannels", {'api': pushbullet_api},
+            function (data) {
+                var channels = jQuery.parseJSON(data).channels;
+
+                for (var i = 0; i < channels.length; i++) {
+                    if(channels[i].active == true){
+                        if(current_pushbullet_device == 'channel:'+channels[i].tag) {
+                            $("#pushbullet_device_list").append('<option value="channel:'+channels[i].tag+'" selected>' + channels[i].name + '</option>')
+                        } else {
+                            $("#pushbullet_device_list").append('<option value="channel:'+channels[i].tag+'">' + channels[i].name + '</option>')
                         }
                     }
                 }
@@ -256,56 +275,6 @@ $(document).ready(function () {
             $('#testPushbullet-result').html("Don't forget to save your new pushbullet settings.");
         });
     };
-
-    //Starting Pushbullet Channels
-
-    function get_pushbullet_channels(msg){
-
-        if(msg){
-            $('#testPushbullet-result').html(loading);
-        }
-        
-        var pushbullet_api = $("#pushbullet_api").val();
-
-        if(!pushbullet_api) {
-            $('#testPushbullet-result').html("You didn't supply a Pushbullet api key");
-            $("#pushbullet_api").focus();
-            return false;
-        }
-
-        var current_pushbullet_channel = $("#pushbullet_channel").val();
-        $.get(sbRoot + "/home/getPushbulletchannels", {'api': pushbullet_api},
-            function (data) {
-                var channels = jQuery.parseJSON(data).channels;
-                $("#pushbullet_channel_list").html('');
-                for (var i = 0; i < channels.length; i++) {
-                    if(channels[i].active == true && channels[i].pushable == true){
-                        if(current_pushbullet_channel == channels[i].iden) {
-                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'" selected>' + channels[i].nickname + '</option>')
-                        } else {
-                            $("#pushbullet_channel_list").append('<option value="'+channels[i].iden+'">' + channels[i].nickname + '</option>')
-                        }
-                    }
-                }
-                if(msg) {
-                    $('#testPushbullet-result').html(msg);
-                }
-            }
-        );
-
-        $("#pushbullet_channel_list").change(function(){
-            $("#pushbullet_channel").val($("#pushbullet_channel_list").val());
-            $('#testPushbullet-result').html("Don't forget to save your new pushbullet settings.");
-        });
-    };
-
-    $('#getPushbulletchannels').click(function(){
-        get_pushbullet_channels("Channels list updated. Please choose a channels to push to.");
-    });
-
-    // we have to call this function on dom ready to create the devices select
-    get_pushbullet_channels();
-    //Stop get channels
 
     $('#getPushbulletDevices').click(function(){
         get_pushbullet_devices("Device list updated. Please choose a device to push to.");
