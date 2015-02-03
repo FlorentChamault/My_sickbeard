@@ -3921,17 +3921,18 @@ class WebInterface:
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         calendar_shows = myDB.select("SELECT show_name, tvdb_id, network, airs, runtime FROM tv_shows WHERE status = 'Continuing' AND paused != '1'")
         
-        # Get local timezone and load network timezones
-        local_zone = tz.tzlocal() 
-        try:
-            network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
-        except:
-            # Dummy network_zone for exceptions
-            network_zone = None
     
         for show in calendar_shows:
             # Get all episodes of this show airing between today and next month
             episode_list = myDB.select("SELECT tvdbid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?", (past_date, future_date, int(show["tvdb_id"])))
+            
+            # Get local timezone and load network timezones
+            local_zone = tz.tzlocal() 
+            try:
+                network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
+            except:
+                # Dummy network_zone for exceptions
+                network_zone = None
 
             for episode in episode_list:
                 
