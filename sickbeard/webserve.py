@@ -3915,7 +3915,7 @@ class WebInterface:
         myDB = db.DBConnection()
         
         # Limit dates
-        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
+        past_date = (datetime.date.today() + datetime.timedelta(weeks=-2)).toordinal()
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
         
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
@@ -3925,7 +3925,7 @@ class WebInterface:
         for show in calendar_shows:
             # Get all episodes of this show airing between today and next month
             episode_list = myDB.select("SELECT tvdbid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?", (past_date, future_date, int(show["tvdb_id"])))
-            
+  
             # Get local timezone and load network timezones
             local_zone = tz.tzlocal() 
             try:
