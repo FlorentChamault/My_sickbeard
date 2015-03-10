@@ -1544,7 +1544,7 @@ class ConfigNotifications:
                           pytivo_host=None, pytivo_share_name=None, pytivo_tivo_name=None,
                           use_nma=None, nma_notify_onsnatch=None, nma_notify_ondownload=None, nma_notify_onsubtitledownload=None, nma_api=None, nma_priority=0,
                           use_pushalot=None, pushalot_notify_onsnatch=None, pushalot_notify_ondownload=None, pushalot_notify_onsubtitledownload=None, pushalot_authorizationtoken=None,
-                          use_pushbullet=None, pushbullet_notify_onsnatch=None, pushbullet_notify_ondownload=None, pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device=None, pushbullet_device_list=None, pushbullet_channel=None, pushbullet_channel_list=None,      
+                          use_pushbullet=None, pushbullet_notify_onsnatch=None, pushbullet_notify_ondownload=None, pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device=None, pushbullet_device_list=None, pushbullet_channel_list=None,      
                           use_mail=None, mail_username=None, mail_password=None, mail_server=None, mail_ssl=None, mail_from=None, mail_to=None, mail_notify_onsnatch=None ):
 
 
@@ -3914,24 +3914,34 @@ class WebInterface:
         myDB = db.DBConnection()
         
         # Limit dates
-        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
+        past_date = (datetime.date.today() + datetime.timedelta(weeks=-2)).toordinal()
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
         
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         calendar_shows = myDB.select("SELECT show_name, tvdb_id, network, airs, runtime FROM tv_shows WHERE status = 'Continuing' AND paused != '1'")
+        
+    
         for show in calendar_shows:
             # Get all episodes of this show airing between today and next month
             episode_list = myDB.select("SELECT tvdbid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?", (past_date, future_date, int(show["tvdb_id"])))
+  
+            # Get local timezone and load network timezones
+            local_zone = tz.tzlocal() 
+            try:
+                network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
+            except:
+                # Dummy network_zone for exceptions
+                network_zone = None
 
             for episode in episode_list:
                 
                 # Get local timezone and load network timezones
-                local_zone = tz.tzlocal() 
-                try:
-                    network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
-                except:
+                #local_zone = tz.tzlocal() 
+                #try:
+                #    network_zone = network_timezones.get_network_timezone(show['network'], network_timezones.load_network_dict(), local_zone)
+                #except:
                     # Dummy network_zone for exceptions
-                    network_zone = None
+                #    network_zone = None
                 
                 # Get the air date and time
                 air_date = datetime.datetime.fromordinal(int(episode['airdate']))
